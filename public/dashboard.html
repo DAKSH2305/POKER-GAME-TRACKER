@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teen Patti Game Tracker</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="header-content">
+                <h1>♠️♥️ Teen Patti Game Tracker ♦️♣️</h1>
+                <p>Track your games, players, balances and loans</p>
+            </div>
+            <div class="header-image">
+                <div class="image-placeholder" id="header-image-placeholder">
+                    <img src="teenpatti.jpg" alt="teenpatti.jpg">
+                </div>
+            </div>
+            <!-- Header image is fixed to the Teen Patti artwork. To change the artwork, replace public/teenpatti.jpg -->
+        </header>
+
+        <nav class="tabs">
+            <button class="tab-btn active" data-tab="games">Games</button>
+            <button class="tab-btn" data-tab="players">Players</button>
+        </nav>
+
+        <!-- Games Tab -->
+        <div class="tab-content active" id="games-tab">
+            <div class="section-header">
+                <h2>Game Sessions</h2>
+                <button class="btn-primary" id="add-game-btn">+ New Game</button>
+            </div>
+
+            <div class="games-grid" id="games-list">
+                <!-- Games will be dynamically added here -->
+            </div>
+        </div>
+
+        <!-- Players Tab -->
+        <div class="tab-content" id="players-tab">
+            <div class="section-header">
+                <h2>Players</h2>
+                <button class="btn-primary" id="add-player-btn">+ Add Player</button>
+            </div>
+
+            <div class="players-list" id="players-container">
+                <!-- Players will be dynamically added here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Game Modal -->
+    <div class="modal" id="game-modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2 id="game-modal-title">Add New Game</h2>
+            <form id="game-form">
+                <div class="form-group">
+                    <label for="game-name">Game Name</label>
+                    <input type="text" id="game-name" required>
+                </div>
+                <div class="form-group">
+                    <label for="game-date">Date</label>
+                    <input type="date" id="game-date" required>
+                </div>
+                <div class="form-group">
+                    <label for="game-status">Status</label>
+                    <select id="game-status">
+                        <option value="active">Active</option>
+                        <option value="completed">Completed</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Add Players</label>
+                    <div class="players-checkbox" id="players-checkbox">
+                        <!-- Players checkboxes will be added here -->
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="game-image">Game Image (URL)</label>
+                    <input type="text" id="game-image" placeholder="Paste image URL here">
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn-secondary" id="cancel-game">Cancel</button>
+                    <button type="submit" class="btn-primary">Save Game</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Player Modal -->
+    <div class="modal" id="player-modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2 id="player-modal-title">Add New Player</h2>
+            <form id="player-form">
+                <div class="form-group">
+                    <label for="player-name">Player Name</label>
+                    <input type="text" id="player-name" required>
+                </div>
+                <div class="form-group">
+                    <label for="player-image">Player Image (URL)</label>
+                    <div class="input-with-action">
+                        <input type="file" id="player-image-file" accept="image/*">
+                        <button type="button" class="btn-secondary small" id="remove-player-image-btn">Remove Image</button>
+                    </div>
+                    <div id="player-image-preview" style="margin-top:8px"></div>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn-secondary" id="cancel-player">Cancel</button>
+                    <button id="confirm-new-player-btn" type="submit" class="btn-primary">Add Player</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Game Details Modal -->
+    <div class="modal" id="game-details-modal">
+        <div class="modal-content wide-modal">
+            <span class="close">&times;</span>
+            <h2 id="game-details-title">Game Details</h2>
+            
+            <div class="game-details-tabs">
+                <button class="detail-tab-btn active" data-tab="overview">Overview</button>
+                <button class="detail-tab-btn" data-tab="balances">Player Balances</button>
+                <button class="detail-tab-btn" data-tab="loans">Loans</button>
+                <button class="detail-tab-btn" data-tab="actions">Actions</button>
+            </div>
+
+            <div class="game-details-content">
+                <!-- Overview Tab -->
+                <div class="detail-tab active" id="overview-tab">
+                    <div class="game-info-card">
+                        <h3>Game Information</h3>
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <label>Status:</label>
+                                <span id="detail-status" class="status-badge"></span>
+                            </div>
+                            <div class="info-item">
+                                <label>Date:</label>
+                                <span id="detail-date"></span>
+                            </div>
+                            <div class="info-item">
+                                <label>Total Players:</label>
+                                <span id="detail-total-players"></span>
+                            </div>
+                            <div class="info-item">
+                                <label>Active Loans:</label>
+                                <span id="detail-active-loans"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="quick-stats">
+                        <h3>Quick Stats</h3>
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <h4>Highest Balance</h4>
+                                <div class="stat-value" id="highest-balance">₹0</div>
+                                <div class="stat-player" id="highest-player">-</div>
+                            </div>
+                            <div class="stat-card">
+                                <h4>Lowest Balance</h4>
+                                <div class="stat-value" id="lowest-balance">₹0</div>
+                                <div class="stat-player" id="lowest-player">-</div>
+                            </div>
+                            <div class="stat-card">
+                                <h4>Total Loan Amount</h4>
+                                <div class="stat-value" id="total-loan-amount">₹0</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Balances Tab -->
+                <div class="detail-tab" id="balances-tab">
+                    <div class="section-header">
+                        <h3>Player Balances</h3>
+                        <button class="btn-primary" id="update-balance-btn">Update Balance</button>
+                    </div>
+                    <div class="balances-table" id="balances-table">
+                        <!-- Balances will be populated here -->
+                    </div>
+                </div>
+
+                <!-- Loans Tab -->
+                <div class="detail-tab" id="loans-tab">
+                    <div class="section-header">
+                        <h3>Loan Management</h3>
+                        <button class="btn-primary" id="add-loan-btn">+ New Loan</button>
+                    </div>
+                    <div class="loans-list" id="game-loans-list">
+                        <!-- Loans will be populated here -->
+                    </div>
+                </div>
+
+                <!-- Actions Tab -->
+                <div class="detail-tab" id="actions-tab">
+                    <div class="action-buttons">
+                        <button class="btn-primary" id="mark-completed-btn">Mark as Completed</button>
+                        <button class="btn-secondary" id="add-player-to-game-btn">Add Player to Game</button>
+                        <button class="btn-danger" id="delete-game-btn">Delete Game</button>
+                    </div>
+                    
+                    <div class="add-player-section">
+                        <h4>Add Player to Game</h4>
+                        <select id="add-player-dropdown" class="form-select">
+                            <option value="">Select Player</option>
+                        </select>
+                        <button id="confirm-add-player-btn" class="btn-primary" onclick="addPlayerToGame()">Add Player</button>
+                    </div>
+
+                    <div class="game-notes">
+                        <h3>Game Notes</h3>
+                        <textarea id="game-notes" placeholder="Add any notes about this game..."></textarea>
+                        <button class="btn-secondary" id="save-notes-btn">Save Notes</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Update Balance Modal -->
+    <div class="modal" id="update-balance-modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Update Player Balance</h2>
+            <form id="update-balance-form">
+                <div class="form-group">
+                    <label for="balance-player">Player</label>
+                    <select id="balance-player" required>
+                        <!-- Players will be populated -->
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="balance-amount">New Balance (₹)</label>
+                    <input type="number" id="balance-amount" required>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn-secondary" id="cancel-balance">Cancel</button>
+                    <button type="submit" class="btn-primary">Update Balance</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add Loan Modal -->
+    <div class="modal" id="loan-modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Add New Loan</h2>
+            <form id="loan-form">
+                <div class="form-group">
+                    <label for="loan-lender">Lender</label>
+                    <select id="loan-lender" required>
+                        <!-- Options will be populated dynamically -->
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="loan-borrower">Borrower</label>
+                    <select id="loan-borrower" required>
+                        <!-- Options will be populated dynamically -->
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="loan-amount">Amount (₹)</label>
+                    <input type="number" id="loan-amount" required>
+                </div>
+                <div class="form-group">
+                    <label for="loan-date">Date</label>
+                    <input type="date" id="loan-date" required>
+                </div>
+                <div class="form-group">
+                    <label for="loan-notes">Notes (Optional)</label>
+                    <textarea id="loan-notes" placeholder="Any additional notes about the loan"></textarea>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn-secondary" id="cancel-loan">Cancel</button>
+                    <button type="submit" class="btn-primary">Add Loan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+        <!-- Image Cropper Modal -->
+        <div class="modal" id="image-cropper-modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h2 id="cropper-title">Adjust Image</h2>
+                <div class="cropper-body">
+                    <div class="cropper-stage">
+                        <img id="cropper-image" src="" alt="">
+                        <div id="cropper-mask"></div>
+                    </div>
+                    <div class="cropper-controls">
+                        <label>Zoom</label>
+                        <input id="cropper-zoom" type="range" min="0.5" max="2.5" step="0.01" value="1">
+                        <div class="cropper-preview">
+                            <canvas id="cropper-preview-canvas"></canvas>
+                        </div>
+                        <div class="cropper-actions">
+                            <button class="btn-secondary" id="cropper-cancel">Cancel</button>
+                            <button class="btn-primary" id="cropper-confirm">Use Image</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
